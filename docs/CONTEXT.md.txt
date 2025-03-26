@@ -4,8 +4,8 @@
 This Telegram bot provides a **credit card generator** and **BIN checker** functionality. Users must register before using commands. The bot can be used in private chat or group chat, and it has an anti-spam mechanism to prevent abuse.
 
 ## Token and ID
-bot token "7898396898:AAGKFRa-jPLqCqGWQvkTOngVKv9nEL_ClMI"
-myuserid "1758748981"
+bot token ""
+myuserid ""
 
 ## Features
 - User registration system
