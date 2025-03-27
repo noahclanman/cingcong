@@ -165,22 +165,44 @@ class CardGenerator:
             f.write(f"{extrap}\n")
 
     def format_output(self, cards: List[str], bin_info: Dict, user_info: Dict) -> str:
-        """Format the generated cards output"""
+        """Format the generated cards output with a minimal design"""
+        
+        # Define separator
+        separator = "━━━━━━━━━━━━━━━━"
+        
+        # Header
         output = [
-            f"🎲 Generated Cards:\n",
-            f"BIN: {bin_info.get('bin', 'Unknown')}",
-            f"Bank: {bin_info.get('bank', 'Unknown')}",
-            f"Brand: {bin_info.get('brand', 'Unknown')}",
-            f"Type: {bin_info.get('type', 'Unknown')}",
-            f"Country: {bin_info.get('country', 'Unknown')}\n",
-            "Generated Cards:",
+            separator,
+            "│ 💳 CC GENERATOR RESULTS 💳",
+            separator,
+            "│ 📊 BIN INFORMATION",
+            f"│ • BIN     : {bin_info.get('bin', 'Unknown')}",
+            f"│ • BANK    : {bin_info.get('bank', 'Unknown')}",
+            f"│ • BRAND   : {bin_info.get('brand', 'Unknown')}",
+            f"│ • TYPE    : {bin_info.get('type', 'Unknown')}",
+            f"│ • COUNTRY : {bin_info.get('country', 'Unknown')}",
+            separator,
+            "│ 🎲 GENERATED CARDS"
         ]
         
-        output.extend(cards)
+        # Format each card
+        for i, card in enumerate(cards, 1):
+            cc_data = card.split('|')
+            if len(cc_data) >= 4:
+                cc, mm, yy, cvv = cc_data
+                output.append(f"│ {i}. `{cc}|{mm}|{yy}|{cvv}`")
+            else:
+                output.append(f"│ {i}. `{card}`")
         
+        # Footer
         output.extend([
-            f"\nUser: {user_info.get('user_id', 'Unknown')}",
-            f"Owner: {user_info.get('username', 'Unknown')}"
+            separator,
+            "│ 👤 USER INFORMATION",
+            f"│ • ID      : {user_info.get('user_id', 'Unknown')}",
+            f"│ • NAME    : {user_info.get('username', 'Unknown')}",
+            separator,
+            "│ ℹ️  Click 📋 to copy card details",
+            separator
         ])
         
         return "\n".join(output)

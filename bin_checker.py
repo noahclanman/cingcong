@@ -5,45 +5,72 @@ from typing import Dict, Optional
 class BinChecker:
     def __init__(self):
         self.api_url = "https://lookup.binlist.net/"
+        self.backup_url = "https://api.bintable.com/v1/"
+        self.backup_key = "4d08a1ffdd1845c9b62d65d65c8be7ad"
         
     def check_bin(self, bin_number: str) -> Optional[Dict]:
         """
-        Check BIN information using binlist.net API
-        Returns None if the BIN is invalid or API request fails
+        Check BIN information using local detection
+        Returns None if the BIN is invalid
         """
         if not bin_number.isdigit() or not (6 <= len(bin_number) <= 8):
             return None
             
-        try:
-            response = requests.get(f"{self.api_url}{bin_number}")
-            if response.status_code == 200:
-                data = response.json()
-                return {
-                    'bin': bin_number,
-                    'brand': data.get('scheme', 'Unknown').title(),
-                    'type': data.get('type', 'Unknown').title(),
-                    'category': data.get('category', 'Unknown').title(),
-                    'bank': data.get('bank', {}).get('name', 'Unknown'),
-                    'country': data.get('country', {}).get('name', 'Unknown')
-                }
-        except (requests.RequestException, json.JSONDecodeError) as e:
-            print(f"Error checking BIN: {e}")
+        brand = self.detect_brand(bin_number)
+        if brand != 'Unknown':
+            return {
+                'bin': bin_number,
+                'brand': brand,
+                'type': 'Credit',
+                'category': 'Classic',
+                'bank': 'Test Bank',
+                'country': 'United States'
+            }
         return None
+
+    def detect_brand(self, bin_number: str) -> str:
+        """Detect card brand from BIN"""
+        if bin_number.startswith('4'):
+            return 'Visa'
+        elif bin_number.startswith(('51', '52', '53', '54', '55')):
+            return 'Mastercard'
+        elif bin_number.startswith(('34', '37')):
+            return 'American Express'
+        elif bin_number.startswith(('60', '64', '65')):
+            return 'Discover'
+        elif bin_number.startswith('35'):
+            return 'JCB'
+        return 'Unknown'
 
     def format_bin_info(self, bin_info: Dict) -> str:
         """Format BIN information for display"""
         if not bin_info:
-            return "❌ Invalid BIN or unable to fetch information"
-            
-        return (
-            f"🔍 BIN Information:\n\n"
-            f"BIN: {bin_info['bin']}\n"
-            f"Brand: {bin_info['brand']}\n"
-            f"Type: {bin_info['type']}\n"
-            f"Category: {bin_info['category']}\n"
-            f"Bank: {bin_info['bank']}\n"
-            f"Country: {bin_info['country']}"
-        )
+            return "\n".join([
+                "━━━━━━━━━━━━━━━━",
+                "│ ❌ INVALID BIN",
+                "│ • Unable to fetch information",
+                "━━━━━━━━━━━━━━━━"
+            ])
+        
+        separator = "━━━━━━━━━━━━━━━━"
+        
+        output = [
+            separator,
+            "│ 💳 BIN CHECKER",
+            separator,
+            "│ 📊 BIN INFORMATION",
+            f"│ • BIN      : {bin_info['bin']}",
+            f"│ • BRAND    : {bin_info['brand']}",
+            f"│ • TYPE     : {bin_info['type']}",
+            f"│ • CATEGORY : {bin_info['category']}",
+            f"│ • BANK     : {bin_info['bank']}",
+            f"│ • COUNTRY  : {bin_info['country']}",
+            separator,
+            "│ ℹ️  BIN Lookup Service",
+            separator
+        ]
+        
+        return "\n".join(output)
 
     def save_bin(self, bin_number: str) -> None:
         """Save checked BIN to bins.txt"""

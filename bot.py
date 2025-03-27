@@ -20,8 +20,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Bot Token and Configuration
-TOKEN = ""
-OWNER_ID = ""
+TOKEN = "7281838363:AAGUYXXpusQJbHbCkP8-VXXDiv-Jdv3VzaI"
+OWNER_ID = "1758748981"
 
 # Anti-spam configuration
 RATE_LIMIT = 10  # seconds
@@ -55,16 +55,21 @@ def check_user_registered(user_id: str) -> bool:
 
 def start(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /start is issued."""
-    welcome_message = (
-        "👋 Welcome to CC Generator & BIN Checker Bot!\n\n"
-        "🔑 Please register using /register before using the commands.\n\n"
-        "Available commands:\n"
-        "/bin <6-8 digit> - Check BIN details\n"
-        "/gen <BIN> - Generate cards (e.g., /gen 424242)\n"
-        "/gen <extrap> - Generate with full format (e.g., /gen 424242xxxxxxxxxx|xx|xx|xxx)\n"
-        "/help - Show command usage\n"
-        "/rules - Show bot rules"
-    )
+    separator = "━━━━━━━━━━━━━━━━"
+    welcome_message = "\n".join([
+        separator,
+        "│ 👋 WELCOME TO CC GENERATOR BOT",
+        separator,
+        "│ 🔑 Register first: /register",
+        "│",
+        "│ 📌 AVAILABLE COMMANDS:",
+        "│ • /bin <6-8 digit> - Check BIN details",
+        "│ • /gen <BIN> - Generate cards",
+        "│ • /gen <extrap> - Generate with full format",
+        "│ • /help - Show command usage",
+        "│ • /rules - Show bot rules",
+        separator
+    ])
     update.message.reply_text(welcome_message)
 
 def register(update: Update, context: CallbackContext) -> None:
@@ -72,53 +77,71 @@ def register(update: Update, context: CallbackContext) -> None:
     user_id = str(update.effective_user.id)
     users = load_users()
     
+    separator = "━━━━━━━━━━━━━━━━"
+    
     if user_id in users:
-        update.message.reply_text("You are already registered! 🎉")
+        message = "\n".join([
+            separator,
+            "│ 🎉 ALREADY REGISTERED",
+            separator
+        ])
+        update.message.reply_text(message)
         return
     
     save_user(user_id)
-    update.message.reply_text(
-        "✅ Registration successful!\n"
-        "You can now use the bot commands:\n"
-        "/bin <6-8 digit> - Check BIN details\n"
-        "/gen <bin_extrap> - Generate credit cards"
-    )
+    message = "\n".join([
+        separator,
+        "│ ✅ REGISTRATION SUCCESSFUL",
+        separator,
+        "│ 📌 AVAILABLE COMMANDS:",
+        "│ • /bin <6-8 digit> - Check BIN details",
+        "│ • /gen <bin_extrap> - Generate credit cards",
+        separator
+    ])
+    update.message.reply_text(message)
 
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
-    help_text = (
-        "🔍 Available Commands:\n\n"
-        "/register - Register to use the bot\n"
-        "/bin <6-8 digit> - Check BIN details\n"
-        "/gen <BIN> - Generate cards with BIN\n"
-        "/gen <extrap> - Generate with full format\n"
-        "/date <BIN/CC> - Generate only date and CVV\n"
-        "/rules - Show bot rules\n"
-        "/help - Show this help message\n\n"
-        "Example usage:\n"
-        "/bin 424242\n"
-        "Simple generate:\n"
-        "/gen 424242\n"
-        "/gen 424242x\n"
-        "Full format:\n"
-        "/gen 424242xxxxxxxxxx|xx|xx|xxx\n"
-        "Date/CVV only:\n"
-        "/date 424242\n"
-        "/date 4242424242424242"
-    )
+    separator = "━━━━━━━━━━━━━━━━"
+    help_text = "\n".join([
+        separator,
+        "│ 🔍 COMMAND GUIDE",
+        separator,
+        "│ 📌 BASIC COMMANDS:",
+        "│ • /register - Register to use the bot",
+        "│ • /bin <6-8 digit> - Check BIN details",
+        "│ • /gen <BIN> - Generate cards with BIN",
+        "│ • /gen <extrap> - Generate with full format",
+        "│ • /date <BIN/CC> - Generate only date and CVV",
+        "│ • /rules - Show bot rules",
+        "│ • /help - Show this help message",
+        separator,
+        "│ 💡 EXAMPLES:",
+        "│ • BIN check: /bin 424242",
+        "│ • Simple gen: /gen 424242",
+        "│ • With x: /gen 424242x",
+        "│ • Full format: /gen 424242xxxxxxxxxx|xx|xx|xxx",
+        "│ • Date only: /date 424242",
+        separator
+    ])
     update.message.reply_text(help_text)
 
 def rules(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /rules is issued."""
-    rules_text = (
-        "📜 Bot Rules:\n\n"
-        "1. Register before using commands\n"
-        "2. Don't spam commands (1-10 sec delay required)\n"
-        "3. Use commands properly with correct format\n"
-        "4. Don't abuse the bot\n"
-        "5. Respect other users\n\n"
-        "⚠️ Breaking rules may result in a 24-hour ban"
-    )
+    separator = "━━━━━━━━━━━━━━━━"
+    rules_text = "\n".join([
+        separator,
+        "│ 📜 BOT RULES",
+        separator,
+        "│ 1. Register before using commands",
+        "│ 2. Don't spam commands (10 sec delay)",
+        "│ 3. Use commands with correct format",
+        "│ 4. Don't abuse the bot",
+        "│ 5. Respect other users",
+        separator,
+        "│ ⚠️  Breaking rules = 24h ban",
+        separator
+    ])
     update.message.reply_text(rules_text)
 
 def date_command(update: Update, context: CallbackContext) -> None:
@@ -128,14 +151,24 @@ def date_command(update: Update, context: CallbackContext) -> None:
     # Check if user is registered
     if not check_user_registered(user_id):
         update.message.reply_text(
-            "❌ You must register first using /register command"
+            "\n".join([
+                "━━━━━━━━━━━━━━━━",
+                "│ ❌ NOT REGISTERED",
+                "│ • Use /register command first",
+                "━━━━━━━━━━━━━━━━"
+            ])
         )
         return
     
     # Check for spam
     if check_spam(user_id):
         update.message.reply_text(
-            "⚠️ Please wait a few seconds between commands to avoid spam"
+            "\n".join([
+                "━━━━━━━━━━━━━━━━",
+                "│ ⚠️ SPAM DETECTED",
+                "│ • Wait 10 seconds between commands",
+                "━━━━━━━━━━━━━━━━"
+            ])
         )
         return
     
@@ -160,7 +193,12 @@ def date_command(update: Update, context: CallbackContext) -> None:
         cards = card_gen.generate_cards(cc, mode='datecvv')
         if not cards:
             update.message.reply_text(
-                "❌ Failed to generate date/CVV. Please check your input."
+                "\n".join([
+                    "━━━━━━━━━━━━━━━━",
+                    "│ ❌ GENERATION FAILED",
+                    "│ • Please check your input format",
+                    "━━━━━━━━━━━━━━━━"
+                ])
             )
             return
             
@@ -176,13 +214,22 @@ def date_command(update: Update, context: CallbackContext) -> None:
         }
         
         # Format output
+        separator = "━━━━━━━━━━━━━━━━"
         output = [
-            f"🎲 Generated Date/CVV:\n",
-            f"Card: {cc}\n",
-            f"Brand: {bin_info.get('brand', 'Unknown')}\n",
-            "Results:"
+            separator,
+            "│ 🎲 GENERATED DATE/CVV",
+            separator,
+            f"│ • CARD     : {cc}",
+            f"│ • BRAND    : {bin_info.get('brand', 'Unknown')}",
+            separator,
+            "│ 📊 RESULTS:"
         ]
-        output.extend(cards)
+        
+        # Add each date/cvv with proper formatting
+        for i, card in enumerate(cards, 1):
+            output.append(f"│ {i}. `{card}`")
+        
+        output.append(separator)
         
         # Send response
         update.message.reply_text(
@@ -217,11 +264,17 @@ def gen_command(update: Update, context: CallbackContext) -> None:
     # Check if extrap pattern is provided
     if not context.args:
         update.message.reply_text(
-            "❌ Please provide a BIN or extrap pattern\n"
-            "Examples:\n"
-            "Simple: /gen 424242\n"
-            "With x: /gen 424242x\n"
-            "Full: /gen 424242xxxxxxxxxx|xx|xx|xxx"
+            "\n".join([
+                "━━━━━━━━━━━━━━━━",
+                "│ ❌ MISSING INPUT",
+                "│ • Provide BIN or extrap pattern",
+                "│",
+                "│ 📝 EXAMPLES:",
+                "│ • Simple: /gen 424242",
+                "│ • With x: /gen 424242x",
+                "│ • Full: /gen 424242xxxxxxxxxx|xx|xx|xxx",
+                "━━━━━━━━━━━━━━━━"
+            ])
         )
         return
     
@@ -236,7 +289,12 @@ def gen_command(update: Update, context: CallbackContext) -> None:
         cards = card_gen.generate_cards(extrap)
         if not cards:
             update.message.reply_text(
-                "❌ Failed to generate cards. Please check your input format."
+                "\n".join([
+                    "━━━━━━━━━━━━━━━━",
+                    "│ ❌ GENERATION FAILED",
+                    "│ • Check your input format",
+                    "━━━━━━━━━━━━━━━━"
+                ])
             )
             return
             
@@ -330,16 +388,24 @@ def bin_command(update: Update, context: CallbackContext) -> None:
         )
     else:
         update.message.reply_text(
-            "❌ Invalid BIN number or unable to fetch information"
+            "\n".join([
+                "━━━━━━━━━━━━━━━━",
+                "│ ❌ INVALID BIN",
+                "│ • Unable to fetch information",
+                "━━━━━━━━━━━━━━━━"
+            ])
         )
 
 def error_handler(update: Update, context: CallbackContext) -> None:
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, context.error)
-    if update.effective_message:
-        update.effective_message.reply_text(
-            "❌ An error occurred while processing your request"
-        )
+    try:
+        if update and update.effective_message:
+            update.effective_message.reply_text(
+                "❌ An error occurred while processing your request"
+            )
+    except:
+        pass  # Silently handle any errors in error handler
 
 def main() -> None:
     """Start the bot."""
