@@ -25,8 +25,8 @@ GROUP_RATE_LIMIT = 3  # seconds
 group_last_command = {}
 
 # Bot Token and Configuration
-TOKEN = "7281838363:AAGUYXXpusQJbHbCkP8-VXXDiv-Jdv3VzaI"
-OWNER_ID = "1758748981"
+TOKEN = ""
+OWNER_ID = ""
 
 # Initialize NotesManager
 notes_manager = NotesManager()
