@@ -20,8 +20,8 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # Bot Token and Configuration
-TOKEN = "7281838363:AAGUYXXpusQJbHbCkP8-VXXDiv-Jdv3VzaI"
-OWNER_ID = "1758748981"
+TOKEN = ""
+OWNER_ID = ""
 
 # Anti-spam configuration
 RATE_LIMIT = 10  # seconds
